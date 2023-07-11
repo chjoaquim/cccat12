@@ -24,7 +24,7 @@ func NewPassengersDb(db *database.Database) *PassengersDb {
 func (p *PassengersDb) Get(id string) (*domain.Passenger, error) {
 	passenger := domain.Passenger{}
 	row := p.db.Connection.QueryRow(`SELECT id, name, document, email, created_at FROM passengers WHERE id=$1`, id)
-	err := row.Scan(&passenger.ID, &passenger.Name, &passenger.Email, &passenger.Document, &passenger.CreatedAt)
+	err := row.Scan(&passenger.ID, &passenger.Name, &passenger.Document, &passenger.Email, &passenger.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -33,11 +33,10 @@ func (p *PassengersDb) Get(id string) (*domain.Passenger, error) {
 
 func (p *PassengersDb) Create(passenger *domain.Passenger) (*domain.Passenger, error) {
 	stmt, err := p.db.Connection.Prepare(`insert into passengers (id, name, document, email, created_at) values ($1,$2, $3, $4, $5)`)
-	defer stmt.Close()
-
 	if err != nil {
 		return nil, err
 	}
+	defer stmt.Close()
 
 	_, err = stmt.Exec(
 		passenger.ID,

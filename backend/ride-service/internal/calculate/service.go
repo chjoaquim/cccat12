@@ -1,9 +1,5 @@
 package calculate
 
-import (
-	"context"
-)
-
 type RideCalculateService struct {
 }
 
@@ -19,12 +15,7 @@ const (
 	MinPrice            = 10
 )
 
-func (s RideCalculateService) Calculate(ctx context.Context, segment Segment) (float64, error) {
-	_, err := segment.isValid()
-	if err != nil {
-		return 0, err
-	}
-
+func (s RideCalculateService) Calculate(segment Segment) float64 {
 	var price = 0.00
 	if segment.isOvernight() && !segment.isSunday() {
 		price += float64(segment.Distance) * OvernightFare
@@ -32,18 +23,14 @@ func (s RideCalculateService) Calculate(ctx context.Context, segment Segment) (f
 	if segment.isOvernight() && segment.isSunday() {
 		price += float64(segment.Distance) * OvernightSundayFare
 	}
-
 	if !segment.isOvernight() && segment.isSunday() {
 		price += float64(segment.Distance) * SundayFare
 	}
-
 	if !segment.isOvernight() && !segment.isSunday() {
 		price += float64(segment.Distance) * NormalFare
 	}
-
 	if price < MinPrice {
 		price = MinPrice
 	}
-
-	return price, nil
+	return price
 }

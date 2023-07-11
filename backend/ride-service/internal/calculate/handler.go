@@ -43,13 +43,12 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ctx := r.Context()
-	result, err := h.calculateService.Calculate(ctx, request)
+	_, err = request.isValid()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
+	result := h.calculateService.Calculate(request)
 	response := RideCalculateResponse{
 		Price: result,
 	}
