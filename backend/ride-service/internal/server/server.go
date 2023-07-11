@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"github.com/chjoaquim/ride-service/pkg/database"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
@@ -83,16 +84,34 @@ func StartHTTPServer(lc fx.Lifecycle, router *chi.Mux) {
 	})
 }
 
+func NewDatabase() *database.Database {
+	// TODO: Change to configuration file.
+	config := database.Config{
+		Credential: database.Credential{
+			Name:     "ride_db",
+			Username: "postgres",
+			Host:     "localhost",
+			Port:     5432,
+			Password: "admin123",
+		},
+	}
+
+	db := database.NewDatabase(&config)
+	return db
+}
+
 func Serve() {
 	ServerDependencies := fx.Provide(
 		NewHTTPClient,
 		NewHTTPRouter,
+		NewDatabase,
 	)
 
 	app := fx.New(
 		fx.Options(
 			ServerDependencies,
 			CalculateRideModule,
+			PassengersModule,
 		),
 		fx.Invoke(StartHTTPServer, NewLogger),
 	)
