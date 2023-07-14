@@ -1,4 +1,6 @@
-package calculate
+package services
+
+import "github.com/chjoaquim/ride-service/internal/calculate/domain"
 
 type RideCalculateService struct {
 }
@@ -15,18 +17,18 @@ const (
 	MinPrice            = 10
 )
 
-func (s RideCalculateService) Calculate(segment Segment) float64 {
+func (s RideCalculateService) Calculate(segment domain.Segment) float64 {
 	var price = 0.00
-	if segment.isOvernight() && !segment.isSunday() {
+	if segment.IsOvernight() && !segment.IsSunday() {
 		price += float64(segment.Distance) * OvernightFare
 	}
-	if segment.isOvernight() && segment.isSunday() {
+	if segment.IsOvernight() && segment.IsSunday() {
 		price += float64(segment.Distance) * OvernightSundayFare
 	}
-	if !segment.isOvernight() && segment.isSunday() {
+	if !segment.IsOvernight() && segment.IsSunday() {
 		price += float64(segment.Distance) * SundayFare
 	}
-	if !segment.isOvernight() && !segment.isSunday() {
+	if !segment.IsOvernight() && !segment.IsSunday() {
 		price += float64(segment.Distance) * NormalFare
 	}
 	if price < MinPrice {

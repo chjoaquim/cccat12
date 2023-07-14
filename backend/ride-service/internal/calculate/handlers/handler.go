@@ -1,21 +1,23 @@
-package calculate
+package handlers
 
 import (
 	"encoding/json"
+	"github.com/chjoaquim/ride-service/internal/calculate/domain"
+	"github.com/chjoaquim/ride-service/internal/calculate/services"
 	"github.com/go-chi/render"
 	"io"
 	"net/http"
 )
 
 type handler struct {
-	calculateService RideCalculateService
+	calculateService services.RideCalculateService
 }
 
 type RideCalculateResponse struct {
 	Price float64 `json:"price"`
 }
 
-func NewCalculateHandler(calculateService RideCalculateService) handler {
+func NewCalculateHandler(calculateService services.RideCalculateService) handler {
 	return handler{
 		calculateService: calculateService,
 	}
@@ -36,14 +38,14 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var request Segment
+	var request domain.Segment
 	err = json.Unmarshal(body, &request)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	_, err = request.isValid()
+	_, err = request.IsValid()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}

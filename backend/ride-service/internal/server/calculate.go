@@ -1,7 +1,8 @@
 package server
 
 import (
-	"github.com/chjoaquim/ride-service/internal/calculate"
+	"github.com/chjoaquim/ride-service/internal/calculate/handlers"
+	service "github.com/chjoaquim/ride-service/internal/calculate/services"
 	"go.uber.org/fx"
 )
 
@@ -10,13 +11,13 @@ type CalculateHandler struct {
 	Handler HTTPHandler `group:"handlers"`
 }
 
-func NewCalculateService() calculate.RideCalculateService {
-	return calculate.NewRideCalculatorService()
+func NewCalculateService() service.RideCalculateService {
+	return service.NewRideCalculatorService()
 }
 
-func NewCalculateHandler(rideCalculateService calculate.RideCalculateService) CalculateHandler {
+func NewCalculateHandler(rideCalculateService service.RideCalculateService) CalculateHandler {
 	return CalculateHandler{
-		Handler: calculate.NewCalculateHandler(rideCalculateService),
+		Handler: handlers.NewCalculateHandler(rideCalculateService),
 	}
 }
 

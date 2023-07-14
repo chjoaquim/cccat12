@@ -1,7 +1,9 @@
-package calculate
+package handlers
 
 import (
 	"encoding/json"
+	"github.com/chjoaquim/ride-service/internal/calculate/domain"
+	service "github.com/chjoaquim/ride-service/internal/calculate/services"
 	"github.com/chjoaquim/ride-service/internal/commons"
 	handlermock "github.com/chjoaquim/ride-service/internal/passengers/handlers/mocks"
 	"github.com/stretchr/testify/assert"
@@ -13,11 +15,11 @@ import (
 )
 
 func TestGivenValidSegment_WhenTryingToCalculate_ThenReturnSuccess(t *testing.T) {
-	segment := Segment{
+	segment := domain.Segment{
 		Distance: 10,
 		Date:     "2023-07-11T14:00:00Z",
 	}
-	service := NewRideCalculatorService()
+	service := service.NewRideCalculatorService()
 	response := sendRequest(strings.NewReader(commons.StructToJson(segment)), service)
 	result := extractBody(response)
 
@@ -26,23 +28,23 @@ func TestGivenValidSegment_WhenTryingToCalculate_ThenReturnSuccess(t *testing.T)
 }
 
 func TestGivenInValidSegment_WhenTryingToCalculate_ThenReturnBadRequest(t *testing.T) {
-	segment := Segment{
+	segment := domain.Segment{
 		Distance: -1,
 		Date:     "2023-07-11T14:00:00Z",
 	}
-	service := NewRideCalculatorService()
+	service := service.NewRideCalculatorService()
 	response := sendRequest(strings.NewReader(commons.StructToJson(segment)), service)
 	assert.Equal(t, http.StatusBadRequest, response.Code)
 }
 
 func TestGivenInValidSegment_WhenTryToCalculateRide_ThenReturnBadRequest(t *testing.T) {
-	service := NewRideCalculatorService()
+	service := service.NewRideCalculatorService()
 	response := sendRequest(strings.NewReader(""), service)
 	assert.Equal(t, http.StatusBadRequest, response.Code)
 }
 
 func TestGivenInvalidRequest_WhenTryToCalculateRide_ThenReturnBadRequest(t *testing.T) {
-	service := NewRideCalculatorService()
+	service := service.NewRideCalculatorService()
 	handler := NewCalculateHandler(service)
 	reader := handlermock.ErrReader(1)
 	req, _ := http.NewRequest(handler.Method(), handler.Pattern(), reader)
@@ -52,7 +54,7 @@ func TestGivenInvalidRequest_WhenTryToCalculateRide_ThenReturnBadRequest(t *test
 
 }
 
-func sendRequest(body io.Reader, service RideCalculateService) *httptest.ResponseRecorder {
+func sendRequest(body io.Reader, service service.RideCalculateService) *httptest.ResponseRecorder {
 	handler := NewCalculateHandler(service)
 	req, _ := http.NewRequest(handler.Method(), handler.Pattern(), body)
 	rr := httptest.NewRecorder()

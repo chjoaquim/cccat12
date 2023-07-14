@@ -1,4 +1,4 @@
-package calculate
+package domain
 
 import (
 	"errors"
@@ -10,7 +10,7 @@ type Segment struct {
 	Date     string `json:"date"`
 }
 
-func (s Segment) isOvernight() bool {
+func (s Segment) IsOvernight() bool {
 	date, err := time.Parse(time.RFC3339, s.Date)
 	if err != nil {
 		return false
@@ -18,7 +18,7 @@ func (s Segment) isOvernight() bool {
 	return date.Hour() >= 22 || date.Hour() <= 6
 }
 
-func (s Segment) isSunday() bool {
+func (s Segment) IsSunday() bool {
 	date, err := time.Parse(time.RFC3339, s.Date)
 	if err != nil {
 		return false
@@ -26,20 +26,20 @@ func (s Segment) isSunday() bool {
 	return date.Weekday() == time.Sunday
 }
 
-func (s Segment) isValidDate() bool {
+func (s Segment) IsValidDate() bool {
 	_, err := time.Parse(time.RFC3339, s.Date)
 	return err == nil
 }
 
-func (s Segment) isValidDistance() bool {
+func (s Segment) IsValidDistance() bool {
 	return s.Distance > 0
 }
 
-func (s Segment) isValid() (bool, error) {
-	if !s.isValidDate() {
+func (s Segment) IsValid() (bool, error) {
+	if !s.IsValidDate() {
 		return false, errors.New("invalid_date")
 	}
-	if !s.isValidDistance() {
+	if !s.IsValidDistance() {
 		return false, errors.New("invalid_distance")
 	}
 	return true, nil
