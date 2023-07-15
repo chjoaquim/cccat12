@@ -91,6 +91,7 @@ func NewDatabase() *database.Database {
 			Name:     "ride_db",
 			Username: "postgres",
 			Host:     "localhost",
+			Schema:   "ride",
 			Port:     5432,
 			Password: "admin123",
 		},
@@ -112,6 +113,7 @@ func Serve() {
 			ServerDependencies,
 			CalculateRideModule,
 			PassengersModule,
+			DriversModule,
 		),
 		fx.Invoke(StartHTTPServer, NewLogger),
 	)

@@ -9,5 +9,6 @@ type Credential struct {
 	Password string
 	Host     string
 	Name     string
+	Schema   string
 	Port     int
 }

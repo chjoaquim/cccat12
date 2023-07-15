@@ -38,19 +38,22 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var request domain.Segment
+	var request domain.CalculateRequest
 	err = json.Unmarshal(body, &request)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	_, err = request.IsValid()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	for _, segment := range request.Segments {
+		_, err = segment.IsValid()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 	}
 
-	result := h.calculateService.Calculate(request)
+	result := h.calculateService.Calculate(request.ToDomain())
 	response := RideCalculateResponse{
 		Price: result,
 	}

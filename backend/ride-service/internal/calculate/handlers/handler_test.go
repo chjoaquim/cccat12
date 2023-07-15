@@ -15,12 +15,17 @@ import (
 )
 
 func TestGivenValidSegment_WhenTryingToCalculate_ThenReturnSuccess(t *testing.T) {
-	segment := domain.Segment{
-		Distance: 10,
-		Date:     "2023-07-11T14:00:00Z",
+	request := domain.CalculateRequest{
+		Segments: []domain.Segment{
+			{
+				Distance: 10,
+				Date:     "2023-07-11T14:00:00Z",
+			},
+		},
 	}
+
 	service := service.NewRideCalculatorService()
-	response := sendRequest(strings.NewReader(commons.StructToJson(segment)), service)
+	response := sendRequest(strings.NewReader(commons.StructToJson(request)), service)
 	result := extractBody(response)
 
 	assert.Equal(t, http.StatusOK, response.Code)
@@ -28,12 +33,17 @@ func TestGivenValidSegment_WhenTryingToCalculate_ThenReturnSuccess(t *testing.T)
 }
 
 func TestGivenInValidSegment_WhenTryingToCalculate_ThenReturnBadRequest(t *testing.T) {
-	segment := domain.Segment{
-		Distance: -1,
-		Date:     "2023-07-11T14:00:00Z",
+	request := domain.CalculateRequest{
+		Segments: []domain.Segment{
+			{
+				Distance: -1,
+				Date:     "2023-07-11T14:00:00Z",
+			},
+		},
 	}
+
 	service := service.NewRideCalculatorService()
-	response := sendRequest(strings.NewReader(commons.StructToJson(segment)), service)
+	response := sendRequest(strings.NewReader(commons.StructToJson(request)), service)
 	assert.Equal(t, http.StatusBadRequest, response.Code)
 }
 

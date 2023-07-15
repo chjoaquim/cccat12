@@ -32,6 +32,6 @@ func (d *Database) Connect(c *Config) {
 
 func dsn(c *Config) string {
 	return fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		c.Credential.Host, c.Credential.Port, c.Credential.Username, c.Credential.Password, c.Credential.Name)
+		"password=%s dbname=%s sslmode=disable search_path=%s",
+		c.Credential.Host, c.Credential.Port, c.Credential.Username, c.Credential.Password, c.Credential.Name, c.Credential.Schema)
 }

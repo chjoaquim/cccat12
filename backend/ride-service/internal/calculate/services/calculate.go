@@ -17,7 +17,19 @@ const (
 	MinPrice            = 10
 )
 
-func (s RideCalculateService) Calculate(segment domain.Segment) float64 {
+func (s RideCalculateService) Calculate(ride domain.Ride) float64 {
+	var price = 0.00
+	for _, segment := range ride.Segments {
+		price += calculateBySegment(segment)
+	}
+
+	if price < MinPrice {
+		price = MinPrice
+	}
+	return price
+}
+
+func calculateBySegment(segment domain.Segment) float64 {
 	var price = 0.00
 	if segment.IsOvernight() && !segment.IsSunday() {
 		price += float64(segment.Distance) * OvernightFare
@@ -30,9 +42,6 @@ func (s RideCalculateService) Calculate(segment domain.Segment) float64 {
 	}
 	if !segment.IsOvernight() && !segment.IsSunday() {
 		price += float64(segment.Distance) * NormalFare
-	}
-	if price < MinPrice {
-		price = MinPrice
 	}
 	return price
 }
