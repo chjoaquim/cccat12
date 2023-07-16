@@ -59,16 +59,13 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	for _, segment := range request.Segments {
-		_, err = segment.IsValid()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
+	
+	result, err := h.calculateRide.Execute(request.ToDomain())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
-	result := h.calculateRide.Execute(request.ToDomain())
 	response := RideCalculateResponse{
 		Price: result,
 	}

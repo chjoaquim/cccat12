@@ -114,3 +114,22 @@ func TestGivenDateWhenIsInvalidThenIsValidReturnFalse(t *testing.T) {
 	assert.False(t, isValid)
 	assert.Equal(t, "invalid_date", err.Error())
 }
+
+func TestGivenSegmentWhenDistanceIsInvalidThenIsValidReturnFalse(t *testing.T) {
+	// Given
+	segment := Segment{Distance: -1, Date: "2020-01-01T22:00:00Z"}
+	// When
+	isValid, err := segment.IsValid()
+	// Then
+	assert.False(t, isValid)
+	assert.Equal(t, "invalid_distance", err.Error())
+}
+
+func TestGivenSegmentWhenIsValidThenIsValidReturnTrue(t *testing.T) {
+	// Given
+	segment := Segment{Distance: 10, Date: "2020-01-01T22:00:00Z"}
+	// When
+	isValid, _ := segment.IsValid()
+	// Then
+	assert.True(t, isValid)
+}
