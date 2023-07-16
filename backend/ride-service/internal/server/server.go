@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/chjoaquim/ride-service/pkg/database"
-	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 	"net"

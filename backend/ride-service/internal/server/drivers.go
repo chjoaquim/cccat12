@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/chjoaquim/ride-service/api/createdrivers"
+	"github.com/chjoaquim/ride-service/api/getdrivers"
 	"github.com/chjoaquim/ride-service/internal/application/repository"
 	"github.com/chjoaquim/ride-service/internal/application/usecase"
 	"github.com/chjoaquim/ride-service/internal/infra"
@@ -31,9 +32,16 @@ func NewCreateDriversHandler(uc usecase.CreateDriverUseCase) DriversHandler {
 	}
 }
 
+func NewGetDriverHandler(uc usecase.GetDriverUseCase) DriversHandler {
+	return DriversHandler{
+		Handler: getdrivers.NewGetDriverHandler(uc),
+	}
+}
+
 var DriversModule = fx.Provide(
 	NewDriverRepository,
 	NewCreateDriversUseCase,
 	NewGetDriversUseCase,
 	NewCreateDriversHandler,
+	NewGetDriverHandler,
 )

@@ -39,7 +39,8 @@ func TestGivenInValidRequest_WhenTryToInsertPassenger_ThenReturnBadRequest(t *te
 
 	handler := NewCreatePassengerHandler(uc)
 	reader := handlermock.ErrReader(1)
-	req, _ := http.NewRequest(handler.Method(), handler.Pattern(), reader)
+	req, err := http.NewRequest(handler.Method(), handler.Pattern(), reader)
+	assert.Nil(t, err)
 	rr := httptest.NewRecorder()
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, http.StatusBadRequest, rr.Code)

@@ -14,7 +14,7 @@ type PassengersHandler struct {
 	Handler HTTPHandler `group:"handlers"`
 }
 
-func NewPassengersRepository(db *database.Database) *infra.PassengersDB {
+func NewPassengersRepository(db *database.Database) repository.PassengerRepository {
 	return infra.NewPassengersDB(db)
 }
 func NewPassengersUseCase(r repository.PassengerRepository) usecase.CreatePassengerUseCase {
