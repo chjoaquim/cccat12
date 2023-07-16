@@ -1,12 +1,12 @@
-package handlers
+package createdrivers
 
 import (
 	"encoding/json"
 	"errors"
+	"github.com/chjoaquim/ride-service/internal/application/usecase"
 	"github.com/chjoaquim/ride-service/internal/commons"
-	"github.com/chjoaquim/ride-service/internal/drivers/domain"
-	"github.com/chjoaquim/ride-service/internal/drivers/repository/mocks"
-	"github.com/chjoaquim/ride-service/internal/drivers/services"
+	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/infra/mocks"
 	handlermock "github.com/chjoaquim/ride-service/internal/passengers/handlers/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -18,7 +18,7 @@ import (
 )
 
 func TestGivenValidRequest_WhenTryToInsertDriver_ThenReturnOK(t *testing.T) {
-	request := domain.DriverRequest{
+	request := DriverRequest{
 		Name:     "João",
 		Email:    "joao@gmail.com",
 		CarPlate: "AAA-1234",
@@ -27,9 +27,9 @@ func TestGivenValidRequest_WhenTryToInsertDriver_ThenReturnOK(t *testing.T) {
 	driver := request.ToDomain()
 	repo := new(mocks.DriverRepository)
 	repo.On("Create", mock.Anything).Return(&driver, nil)
-	service := services.NewDriverService(repo)
+	uc := usecase.NewCreateDriverUseCase(repo)
 
-	response := sendRequest(strings.NewReader(commons.StructToJson(request)), service)
+	response := sendRequest(strings.NewReader(commons.StructToJson(request)), uc)
 	bodyResp := extractBody(response)
 	assert.Equal(t, http.StatusCreated, response.Code)
 	assert.Equal(t, request.Name, bodyResp.Name)
@@ -37,8 +37,8 @@ func TestGivenValidRequest_WhenTryToInsertDriver_ThenReturnOK(t *testing.T) {
 
 func TestGivenInValidRequest_WhenTryToInsertDriver_ThenReturnBadRequest(t *testing.T) {
 	repo := new(mocks.DriverRepository)
-	service := services.NewDriverService(repo)
-	handler := NewDriverHandler(service)
+	uc := usecase.NewCreateDriverUseCase(repo)
+	handler := NewCreateDriverHandler(uc)
 	reader := handlermock.ErrReader(1)
 	req, _ := http.NewRequest(handler.Method(), handler.Pattern(), reader)
 	rr := httptest.NewRecorder()
@@ -48,13 +48,13 @@ func TestGivenInValidRequest_WhenTryToInsertDriver_ThenReturnBadRequest(t *testi
 
 func TestGivenInValidBody_WhenTryToInsertDriver_ThenReturnBadRequest(t *testing.T) {
 	repo := new(mocks.DriverRepository)
-	service := services.NewDriverService(repo)
-	response := sendRequest(strings.NewReader(""), service)
+	uc := usecase.NewCreateDriverUseCase(repo)
+	response := sendRequest(strings.NewReader(""), uc)
 	assert.Equal(t, http.StatusBadRequest, response.Code)
 }
 
 func TestGivenValidRequest_WhenGetDatabaseError_ThenReturnInternalServerError(t *testing.T) {
-	request := domain.DriverRequest{
+	request := DriverRequest{
 		Name:     "João",
 		Email:    "joao@gmail.com",
 		CarPlate: "AAA-1234",
@@ -62,13 +62,13 @@ func TestGivenValidRequest_WhenGetDatabaseError_ThenReturnInternalServerError(t 
 	}
 	repo := new(mocks.DriverRepository)
 	repo.On("Create", mock.Anything).Return(nil, errors.New("database error"))
-	service := services.NewDriverService(repo)
-	response := sendRequest(strings.NewReader(commons.StructToJson(request)), service)
+	uc := usecase.NewCreateDriverUseCase(repo)
+	response := sendRequest(strings.NewReader(commons.StructToJson(request)), uc)
 	assert.Equal(t, http.StatusInternalServerError, response.Code)
 }
 
-func sendRequest(body io.Reader, service services.DriverService) *httptest.ResponseRecorder {
-	handler := NewDriverHandler(service)
+func sendRequest(body io.Reader, uc usecase.CreateDriverUseCase) *httptest.ResponseRecorder {
+	handler := NewCreateDriverHandler(uc)
 	req, _ := http.NewRequest(handler.Method(), handler.Pattern(), body)
 	rr := httptest.NewRecorder()
 	handler.ServeHTTP(rr, req)

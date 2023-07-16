@@ -1,9 +1,10 @@
 package server
 
 import (
-	"github.com/chjoaquim/ride-service/internal/drivers/handlers"
-	"github.com/chjoaquim/ride-service/internal/drivers/repository"
-	"github.com/chjoaquim/ride-service/internal/drivers/services"
+	"github.com/chjoaquim/ride-service/api/createdrivers"
+	"github.com/chjoaquim/ride-service/internal/application/repository"
+	"github.com/chjoaquim/ride-service/internal/application/usecase"
+	"github.com/chjoaquim/ride-service/internal/infra"
 	"github.com/chjoaquim/ride-service/pkg/database"
 	"go.uber.org/fx"
 )
@@ -14,20 +15,25 @@ type DriversHandler struct {
 }
 
 func NewDriverRepository(db *database.Database) repository.DriverRepository {
-	return repository.NewDriverDB(db)
+	return infra.NewDriverDB(db)
 }
-func NewDriversService(r repository.DriverRepository) services.DriverService {
-	return services.NewDriverService(r)
+func NewCreateDriversUseCase(r repository.DriverRepository) usecase.CreateDriverUseCase {
+	return usecase.NewCreateDriverUseCase(r)
 }
 
-func NewCreateDriversHandler(service services.DriverService) DriversHandler {
+func NewGetDriversUseCase(r repository.DriverRepository) usecase.GetDriverUseCase {
+	return usecase.NewGetDriverUseCase(r)
+}
+
+func NewCreateDriversHandler(uc usecase.CreateDriverUseCase) DriversHandler {
 	return DriversHandler{
-		Handler: handlers.NewDriverHandler(service),
+		Handler: createdrivers.NewCreateDriverHandler(uc),
 	}
 }
 
 var DriversModule = fx.Provide(
 	NewDriverRepository,
-	NewDriversService,
+	NewCreateDriversUseCase,
+	NewGetDriversUseCase,
 	NewCreateDriversHandler,
 )

@@ -1,17 +1,12 @@
-package repository
+package infra
 
 import (
-	"github.com/chjoaquim/ride-service/internal/drivers/domain"
+	"github.com/chjoaquim/ride-service/internal/domain"
 	"github.com/chjoaquim/ride-service/pkg/database"
 )
 
 type DriverDB struct {
 	db *database.Database
-}
-
-type DriverRepository interface {
-	Create(driver *domain.Driver) (*domain.Driver, error)
-	Get(id string) (*domain.Driver, error)
 }
 
 func NewDriverDB(db *database.Database) *DriverDB {

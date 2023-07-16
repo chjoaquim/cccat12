@@ -1,12 +1,12 @@
-package services
+package usecase
 
-import "github.com/chjoaquim/ride-service/internal/calculate/domain"
+import "github.com/chjoaquim/ride-service/internal/domain"
 
-type RideCalculateService struct {
+type CalculateRide struct {
 }
 
-func NewRideCalculatorService() RideCalculateService {
-	return RideCalculateService{}
+func NewCalculateRide() CalculateRide {
+	return CalculateRide{}
 }
 
 const (
@@ -17,7 +17,7 @@ const (
 	MinPrice            = 10
 )
 
-func (s RideCalculateService) Calculate(ride domain.Ride) float64 {
+func (s CalculateRide) Execute(ride domain.Ride) float64 {
 	var price = 0.00
 	for _, segment := range ride.Segments {
 		price += calculateBySegment(segment)

@@ -1,7 +1,7 @@
-package services
+package usecase
 
 import (
-	"github.com/chjoaquim/ride-service/internal/calculate/domain"
+	"github.com/chjoaquim/ride-service/internal/domain"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -16,8 +16,8 @@ func TestGivenSegmentInOvernight_WhenNotSunday_ThenCalculateWithSuccess(t *testi
 		},
 	}
 
-	service := NewRideCalculatorService()
-	price := service.Calculate(ride)
+	calculateRide := NewCalculateRide()
+	price := calculateRide.Execute(ride)
 	assert.Equal(t, 39.0, price)
 }
 
@@ -30,8 +30,8 @@ func TestGivenSegmentInOvernight_WhenSunday_ThenCalculateWithSuccess(t *testing.
 			},
 		},
 	}
-	service := NewRideCalculatorService()
-	price := service.Calculate(ride)
+	calculateRide := NewCalculateRide()
+	price := calculateRide.Execute(ride)
 	assert.Equal(t, 50.0, price)
 }
 
@@ -44,8 +44,8 @@ func TestGivenSegmentNotInOvernight_WhenSunday_ThenCalculateWithSuccess(t *testi
 			},
 		},
 	}
-	service := NewRideCalculatorService()
-	price := service.Calculate(ride)
+	calculateRide := NewCalculateRide()
+	price := calculateRide.Execute(ride)
 	assert.Equal(t, 29.0, price)
 }
 
@@ -58,8 +58,8 @@ func TestGivenSegmentNotInOvernight_WhenNotSunday_ThenCalculateWithSuccess(t *te
 			},
 		},
 	}
-	service := NewRideCalculatorService()
-	price := service.Calculate(ride)
+	calculateRide := NewCalculateRide()
+	price := calculateRide.Execute(ride)
 	assert.Equal(t, 21.0, price)
 }
 
@@ -72,7 +72,7 @@ func TestGivenSegment_WhenPriceIsLessThanMinimum_ThenReturnMinimum(t *testing.T)
 			},
 		},
 	}
-	service := NewRideCalculatorService()
-	price := service.Calculate(ride)
+	calculateRide := NewCalculateRide()
+	price := calculateRide.Execute(ride)
 	assert.Equal(t, 10.0, price)
 }

@@ -1,10 +1,10 @@
-package repository
+package infra
 
 import (
 	"errors"
 	"fmt"
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/chjoaquim/ride-service/internal/drivers/domain"
+	"github.com/chjoaquim/ride-service/internal/domain"
 	"github.com/chjoaquim/ride-service/pkg/database"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"

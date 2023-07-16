@@ -1,10 +1,10 @@
-package handlers
+package calculateride
 
 import (
 	"encoding/json"
-	"github.com/chjoaquim/ride-service/internal/calculate/domain"
-	service "github.com/chjoaquim/ride-service/internal/calculate/services"
+	"github.com/chjoaquim/ride-service/internal/application/usecase"
 	"github.com/chjoaquim/ride-service/internal/commons"
+	"github.com/chjoaquim/ride-service/internal/domain"
 	handlermock "github.com/chjoaquim/ride-service/internal/passengers/handlers/mocks"
 	"github.com/stretchr/testify/assert"
 	"io"
@@ -15,7 +15,7 @@ import (
 )
 
 func TestGivenValidSegment_WhenTryingToCalculate_ThenReturnSuccess(t *testing.T) {
-	request := domain.CalculateRequest{
+	request := CalculateRequest{
 		Segments: []domain.Segment{
 			{
 				Distance: 10,
@@ -24,8 +24,8 @@ func TestGivenValidSegment_WhenTryingToCalculate_ThenReturnSuccess(t *testing.T)
 		},
 	}
 
-	service := service.NewRideCalculatorService()
-	response := sendRequest(strings.NewReader(commons.StructToJson(request)), service)
+	calculateRide := usecase.NewCalculateRide()
+	response := sendRequest(strings.NewReader(commons.StructToJson(request)), calculateRide)
 	result := extractBody(response)
 
 	assert.Equal(t, http.StatusOK, response.Code)
@@ -33,7 +33,7 @@ func TestGivenValidSegment_WhenTryingToCalculate_ThenReturnSuccess(t *testing.T)
 }
 
 func TestGivenInValidSegment_WhenTryingToCalculate_ThenReturnBadRequest(t *testing.T) {
-	request := domain.CalculateRequest{
+	request := CalculateRequest{
 		Segments: []domain.Segment{
 			{
 				Distance: -1,
@@ -42,20 +42,20 @@ func TestGivenInValidSegment_WhenTryingToCalculate_ThenReturnBadRequest(t *testi
 		},
 	}
 
-	service := service.NewRideCalculatorService()
-	response := sendRequest(strings.NewReader(commons.StructToJson(request)), service)
+	uc := usecase.NewCalculateRide()
+	response := sendRequest(strings.NewReader(commons.StructToJson(request)), uc)
 	assert.Equal(t, http.StatusBadRequest, response.Code)
 }
 
 func TestGivenInValidSegment_WhenTryToCalculateRide_ThenReturnBadRequest(t *testing.T) {
-	service := service.NewRideCalculatorService()
-	response := sendRequest(strings.NewReader(""), service)
+	uc := usecase.NewCalculateRide()
+	response := sendRequest(strings.NewReader(""), uc)
 	assert.Equal(t, http.StatusBadRequest, response.Code)
 }
 
 func TestGivenInvalidRequest_WhenTryToCalculateRide_ThenReturnBadRequest(t *testing.T) {
-	service := service.NewRideCalculatorService()
-	handler := NewCalculateHandler(service)
+	uc := usecase.NewCalculateRide()
+	handler := NewCalculateHandler(uc)
 	reader := handlermock.ErrReader(1)
 	req, _ := http.NewRequest(handler.Method(), handler.Pattern(), reader)
 	rr := httptest.NewRecorder()
@@ -64,8 +64,8 @@ func TestGivenInvalidRequest_WhenTryToCalculateRide_ThenReturnBadRequest(t *test
 
 }
 
-func sendRequest(body io.Reader, service service.RideCalculateService) *httptest.ResponseRecorder {
-	handler := NewCalculateHandler(service)
+func sendRequest(body io.Reader, uc usecase.CalculateRide) *httptest.ResponseRecorder {
+	handler := NewCalculateHandler(uc)
 	req, _ := http.NewRequest(handler.Method(), handler.Pattern(), body)
 	rr := httptest.NewRecorder()
 	handler.ServeHTTP(rr, req)
