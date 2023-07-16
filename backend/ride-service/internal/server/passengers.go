@@ -1,9 +1,10 @@
 package server
 
 import (
-	createpassengers "github.com/chjoaquim/ride-service/internal/passengers/handlers"
-	"github.com/chjoaquim/ride-service/internal/passengers/repository"
-	passengers "github.com/chjoaquim/ride-service/internal/passengers/service"
+	"github.com/chjoaquim/ride-service/api/createpassengers"
+	"github.com/chjoaquim/ride-service/internal/application/repository"
+	"github.com/chjoaquim/ride-service/internal/application/usecase"
+	"github.com/chjoaquim/ride-service/internal/infra"
 	"github.com/chjoaquim/ride-service/pkg/database"
 	"go.uber.org/fx"
 )
@@ -13,21 +14,21 @@ type PassengersHandler struct {
 	Handler HTTPHandler `group:"handlers"`
 }
 
-func NewPassengersRepository(db *database.Database) repository.PassengerRepository {
-	return repository.NewPassengersDb(db)
+func NewPassengersRepository(db *database.Database) *infra.PassengersDB {
+	return infra.NewPassengersDB(db)
 }
-func NewPassengersService(r repository.PassengerRepository) passengers.PassengerService {
-	return passengers.NewPassengerService(r)
+func NewPassengersUseCase(r repository.PassengerRepository) usecase.CreatePassengerUseCase {
+	return usecase.NewCreatePassengerUseCase(r)
 }
 
-func NewCreatePassengersHandler(passengerService passengers.PassengerService) PassengersHandler {
+func NewCreatePassengersHandler(uc usecase.CreatePassengerUseCase) PassengersHandler {
 	return PassengersHandler{
-		Handler: createpassengers.NewCreatePassengersHandler(passengerService),
+		Handler: createpassengers.NewCreatePassengerHandler(uc),
 	}
 }
 
 var PassengersModule = fx.Provide(
 	NewPassengersRepository,
-	NewPassengersService,
+	NewPassengersUseCase,
 	NewCreatePassengersHandler,
 )

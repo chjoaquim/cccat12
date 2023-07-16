@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	domain "github.com/chjoaquim/ride-service/internal/passengers/domain"
+	"github.com/chjoaquim/ride-service/internal/domain"
 	mock "github.com/stretchr/testify/mock"
 )
 

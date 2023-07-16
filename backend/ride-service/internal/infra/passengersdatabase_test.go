@@ -1,10 +1,10 @@
-package repository
+package infra
 
 import (
 	"errors"
 	"fmt"
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/chjoaquim/ride-service/internal/passengers/domain"
+	"github.com/chjoaquim/ride-service/internal/domain"
 	"github.com/chjoaquim/ride-service/pkg/database"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -18,7 +18,7 @@ func TestGivenValidPassenger_WhenTryToInsertToDB_ThenReturnOK(t *testing.T) {
 		Connection: db,
 	}
 	defer db.Close()
-	pdb := NewPassengersDb(&database)
+	pdb := NewPassengersDB(&database)
 	passenger := buildPassenger()
 
 	mock.ExpectPrepare("insert into passengers")
@@ -40,7 +40,7 @@ func TestGivenValidPassenger_WhenTryToPrepareQueryWithError_ThenReturnError(t *t
 		Connection: db,
 	}
 	defer db.Close()
-	pdb := NewPassengersDb(&database)
+	pdb := NewPassengersDB(&database)
 	passenger := buildPassenger()
 	mock.ExpectPrepare("insert into passengers").WillReturnError(errors.New("error_to_prepare"))
 
@@ -56,7 +56,7 @@ func TestGivenValidPassenger_WhenTryToExecQueryWithError_ThenReturnError(t *test
 		Connection: db,
 	}
 	defer db.Close()
-	pdb := NewPassengersDb(&database)
+	pdb := NewPassengersDB(&database)
 	passenger := buildPassenger()
 	mock.ExpectPrepare("insert into passengers")
 	mock.
@@ -76,7 +76,7 @@ func TestGivenValidPassengerID_WhenTryGet_ThenReturnOK(t *testing.T) {
 		Connection: db,
 	}
 	defer db.Close()
-	pdb := NewPassengersDb(&database)
+	pdb := NewPassengersDB(&database)
 	passengerID := uuid.New().String()
 	columns := []string{"id", "name", "document", "email", "created_at"}
 	mock.
@@ -100,7 +100,7 @@ func TestGivenValidPassengerID_WhenGetThrowsAnError_ThenReturnError(t *testing.T
 		Connection: db,
 	}
 	defer db.Close()
-	pdb := NewPassengersDb(&database)
+	pdb := NewPassengersDB(&database)
 	passengerID := uuid.New().String()
 	mock.
 		ExpectQuery("SELECT id, name, document, email, created_at FROM passengers").

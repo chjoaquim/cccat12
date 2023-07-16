@@ -3,11 +3,11 @@ package createpassengers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/chjoaquim/ride-service/internal/commons"
-	"github.com/chjoaquim/ride-service/internal/passengers/domain"
-	handlermock "github.com/chjoaquim/ride-service/internal/passengers/handlers/mocks"
-	"github.com/chjoaquim/ride-service/internal/passengers/repository/mocks"
-	passengers "github.com/chjoaquim/ride-service/internal/passengers/service"
+	handlermock "github.com/chjoaquim/ride-service/api/mocks"
+	"github.com/chjoaquim/ride-service/internal/application/usecase"
+	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/infra/mocks"
+	"github.com/chjoaquim/ride-service/pkg/commons"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"io"
@@ -18,7 +18,7 @@ import (
 )
 
 func TestGivenValidRequest_WhenTryToInsertPassenger_ThenReturnOK(t *testing.T) {
-	request := domain.CreatePassenger{
+	request := CreatePassenger{
 		Name:     "João",
 		Email:    "joao@gmail.com",
 		Document: "41565245896",
@@ -26,11 +26,8 @@ func TestGivenValidRequest_WhenTryToInsertPassenger_ThenReturnOK(t *testing.T) {
 	passenger := request.ToDomain()
 	repo := new(mocks.PassengerRepository)
 	repo.On("Create", mock.Anything).Return(&passenger, nil)
-	service := passengers.PassengerService{
-		Repository: repo,
-	}
-
-	response := sendRequest(strings.NewReader(commons.StructToJson(request)), service)
+	uc := usecase.NewCreatePassengerUseCase(repo)
+	response := sendRequest(strings.NewReader(commons.StructToJson(request)), uc)
 	bodyResp := extractBody(response)
 	assert.Equal(t, http.StatusCreated, response.Code)
 	assert.Equal(t, request.Name, bodyResp.Name)
@@ -38,11 +35,9 @@ func TestGivenValidRequest_WhenTryToInsertPassenger_ThenReturnOK(t *testing.T) {
 
 func TestGivenInValidRequest_WhenTryToInsertPassenger_ThenReturnBadRequest(t *testing.T) {
 	repo := new(mocks.PassengerRepository)
-	service := passengers.PassengerService{
-		Repository: repo,
-	}
+	uc := usecase.NewCreatePassengerUseCase(repo)
 
-	handler := NewCreatePassengersHandler(service)
+	handler := NewCreatePassengerHandler(uc)
 	reader := handlermock.ErrReader(1)
 	req, _ := http.NewRequest(handler.Method(), handler.Pattern(), reader)
 	rr := httptest.NewRecorder()
@@ -52,27 +47,23 @@ func TestGivenInValidRequest_WhenTryToInsertPassenger_ThenReturnBadRequest(t *te
 
 func TestGivenInValidBody_WhenTryToInsertPassenger_ThenReturnBadRequest(t *testing.T) {
 	repo := new(mocks.PassengerRepository)
-	service := passengers.PassengerService{
-		Repository: repo,
-	}
+	uc := usecase.NewCreatePassengerUseCase(repo)
 
-	response := sendRequest(strings.NewReader(""), service)
+	response := sendRequest(strings.NewReader(""), uc)
 	assert.Equal(t, http.StatusBadRequest, response.Code)
 }
 
 func TestGivenValidRequest_WhenGetDatabaseError_ThenReturnInternalServerError(t *testing.T) {
-	request := domain.CreatePassenger{
+	request := CreatePassenger{
 		Name:     "João",
 		Email:    "joao@gmail.com",
 		Document: "41565245896",
 	}
 	repo := new(mocks.PassengerRepository)
 	repo.On("Create", mock.Anything).Return(nil, errors.New("database error"))
-	service := passengers.PassengerService{
-		Repository: repo,
-	}
+	uc := usecase.NewCreatePassengerUseCase(repo)
 
-	response := sendRequest(strings.NewReader(commons.StructToJson(request)), service)
+	response := sendRequest(strings.NewReader(commons.StructToJson(request)), uc)
 	assert.Equal(t, http.StatusInternalServerError, response.Code)
 }
 
@@ -83,8 +74,8 @@ func extractBody(response *httptest.ResponseRecorder) *domain.Passenger {
 	return &bodyResp
 }
 
-func sendRequest(body io.Reader, service passengers.PassengerService) *httptest.ResponseRecorder {
-	handler := NewCreatePassengersHandler(service)
+func sendRequest(body io.Reader, uc usecase.CreatePassengerUseCase) *httptest.ResponseRecorder {
+	handler := NewCreatePassengerHandler(uc)
 	req, _ := http.NewRequest(handler.Method(), handler.Pattern(), body)
 	rr := httptest.NewRecorder()
 	handler.ServeHTTP(rr, req)

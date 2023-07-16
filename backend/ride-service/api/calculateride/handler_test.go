@@ -2,10 +2,10 @@ package calculateride
 
 import (
 	"encoding/json"
+	handlermock "github.com/chjoaquim/ride-service/api/mocks"
 	"github.com/chjoaquim/ride-service/internal/application/usecase"
-	"github.com/chjoaquim/ride-service/internal/commons"
 	"github.com/chjoaquim/ride-service/internal/domain"
-	handlermock "github.com/chjoaquim/ride-service/internal/passengers/handlers/mocks"
+	"github.com/chjoaquim/ride-service/pkg/commons"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"net/http"

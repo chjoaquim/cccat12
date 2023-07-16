@@ -2,20 +2,38 @@ package createpassengers
 
 import (
 	"encoding/json"
-	"github.com/chjoaquim/ride-service/internal/passengers/domain"
-	passengers "github.com/chjoaquim/ride-service/internal/passengers/service"
+	"github.com/chjoaquim/ride-service/internal/application/usecase"
+	"github.com/chjoaquim/ride-service/internal/domain"
 	"github.com/go-chi/render"
+	"github.com/google/uuid"
 	"io"
 	"net/http"
+	"time"
 )
 
-type handler struct {
-	service passengers.PassengerService
+type CreatePassenger struct {
+	Name     string `json:"name"`
+	Document string `json:"document"`
+	Email    string `json:"email"`
 }
 
-func NewCreatePassengersHandler(service passengers.PassengerService) handler {
+func (c *CreatePassenger) ToDomain() domain.Passenger {
+	return domain.Passenger{
+		ID:        uuid.New().String(),
+		Name:      c.Name,
+		Email:     c.Email,
+		Document:  c.Document,
+		CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
+	}
+}
+
+type handler struct {
+	usecase.CreatePassengerUseCase
+}
+
+func NewCreatePassengerHandler(uc usecase.CreatePassengerUseCase) handler {
 	return handler{
-		service: service,
+		CreatePassengerUseCase: uc,
 	}
 }
 
@@ -34,7 +52,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	request := domain.CreatePassenger{}
+	request := CreatePassenger{}
 	err = json.Unmarshal(body, &request)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -42,7 +60,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	passenger := request.ToDomain()
-	result, err := h.service.Create(&passenger)
+	result, err := h.CreatePassengerUseCase.Execute(&passenger)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

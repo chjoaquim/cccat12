@@ -1,9 +1,9 @@
-package passengers
+package usecase
 
 import (
 	"errors"
-	"github.com/chjoaquim/ride-service/internal/passengers/domain"
-	"github.com/chjoaquim/ride-service/internal/passengers/repository/mocks"
+	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/infra/mocks"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -21,9 +21,9 @@ func TestGivenAValidPassenger_WhenTryToCreate_ThenReturnPassenger(t *testing.T) 
 
 	repository := new(mocks.PassengerRepository)
 	repository.On("Create", passenger).Return(passenger, nil)
-	service := NewPassengerService(repository)
+	uc := NewCreatePassengerUseCase(repository)
 
-	result, err := service.Create(passenger)
+	result, err := uc.Execute(passenger)
 	assert.Nil(t, err)
 	assert.Equal(t, passenger, result)
 }
@@ -39,9 +39,9 @@ func TestGivenAValidPassenger_WhenTryToCreateWithError_ThenReturnError(t *testin
 
 	repository := new(mocks.PassengerRepository)
 	repository.On("Create", passenger).Return(nil, errors.New("test_error"))
-	service := NewPassengerService(repository)
+	uc := NewCreatePassengerUseCase(repository)
 
-	result, err := service.Create(passenger)
+	result, err := uc.Execute(passenger)
 	assert.Nil(t, result)
 	assert.Equal(t, "test_error", err.Error())
 }
