@@ -1,8 +1,8 @@
 package server
 
 import (
-	"github.com/chjoaquim/ride-service/internal/calculate/handlers"
-	service "github.com/chjoaquim/ride-service/internal/calculate/services"
+	"github.com/chjoaquim/ride-service/api/calculateride"
+	"github.com/chjoaquim/ride-service/internal/application/usecase"
 	"go.uber.org/fx"
 )
 
@@ -11,17 +11,17 @@ type CalculateHandler struct {
 	Handler HTTPHandler `group:"handlers"`
 }
 
-func NewCalculateService() service.RideCalculateService {
-	return service.NewRideCalculatorService()
+func NewCalculateUseCase() usecase.CalculateRide {
+	return usecase.NewCalculateRide()
 }
 
-func NewCalculateHandler(rideCalculateService service.RideCalculateService) CalculateHandler {
+func NewCalculateHandler(uc usecase.CalculateRide) CalculateHandler {
 	return CalculateHandler{
-		Handler: handlers.NewCalculateHandler(rideCalculateService),
+		Handler: calculateride.NewCalculateHandler(uc),
 	}
 }
 
 var CalculateRideModule = fx.Provide(
-	NewCalculateService,
+	NewCalculateUseCase,
 	NewCalculateHandler,
 )

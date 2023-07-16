@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/chjoaquim/ride-service/pkg/database"
-	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 	"net"
@@ -35,7 +35,6 @@ func NewHTTPRouter(params RouterParams) *chi.Mux {
 
 	router.Route("/ride", func(r chi.Router) {
 		for _, handler := range params.Handlers {
-			fmt.Println("Adding route: ", handler.Method(), handler.Pattern())
 			r.Method(handler.Method(), handler.Pattern(), handler)
 		}
 	})
