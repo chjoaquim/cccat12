@@ -1,13 +1,14 @@
-package domain
+package segment_test
 
 import (
+	segmentDomain "github.com/chjoaquim/ride-service/internal/domain/ride/segment"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestGivenDateTimeWhenIsOvernightThenReturnTrue(t *testing.T) {
 	// Given
-	segment := Segment{Date: "2020-01-01T22:00:00Z"}
+	segment := segmentDomain.Segment{Date: "2020-01-01T22:00:00Z"}
 	// When
 	isOvernight := segment.IsOvernight()
 	// Then
@@ -16,7 +17,7 @@ func TestGivenDateTimeWhenIsOvernightThenReturnTrue(t *testing.T) {
 
 func TestGivenDateTimeWhenIsInvalidThenOvernightReturnFalse(t *testing.T) {
 	// Given
-	segment := Segment{Date: "invalid"}
+	segment := segmentDomain.Segment{Date: "invalid"}
 	// When
 	isOvernight := segment.IsOvernight()
 	// Then
@@ -25,7 +26,7 @@ func TestGivenDateTimeWhenIsInvalidThenOvernightReturnFalse(t *testing.T) {
 
 func TestGivenDateTimeWhenIsNotOvernightThenReturnFalse(t *testing.T) {
 	// Given
-	segment := Segment{Date: "2020-01-01T10:00:00Z"}
+	segment := segmentDomain.Segment{Date: "2020-01-01T10:00:00Z"}
 	// When
 	isOvernight := segment.IsOvernight()
 	// Then
@@ -34,7 +35,7 @@ func TestGivenDateTimeWhenIsNotOvernightThenReturnFalse(t *testing.T) {
 
 func TestGivenDateTimeWhenIsSundayThenReturnTrue(t *testing.T) {
 	// Given
-	segment := Segment{Date: "2020-01-05T10:00:00Z"}
+	segment := segmentDomain.Segment{Date: "2020-01-05T10:00:00Z"}
 	// When
 	isSunday := segment.IsSunday()
 	// Then
@@ -43,7 +44,7 @@ func TestGivenDateTimeWhenIsSundayThenReturnTrue(t *testing.T) {
 
 func TestGivenDateTimeWhenIsNotSundayThenReturnFalse(t *testing.T) {
 	// Given
-	segment := Segment{Date: "2023-07-03T10:00:00Z"}
+	segment := segmentDomain.Segment{Date: "2023-07-03T10:00:00Z"}
 	// When
 	isSunday := segment.IsSunday()
 	// Then
@@ -52,7 +53,7 @@ func TestGivenDateTimeWhenIsNotSundayThenReturnFalse(t *testing.T) {
 
 func TestGivenInvalidDateTimeWhenIsNotSundayThenReturnFalse(t *testing.T) {
 	// Given
-	segment := Segment{Date: "invalid"}
+	segment := segmentDomain.Segment{Date: "invalid"}
 	// When
 	isSunday := segment.IsSunday()
 	// Then
@@ -61,7 +62,7 @@ func TestGivenInvalidDateTimeWhenIsNotSundayThenReturnFalse(t *testing.T) {
 
 func TestGivenDateTimeWhenIsInvalidThenReturnFalse(t *testing.T) {
 	// Given
-	segment := Segment{Date: "invalid_date"}
+	segment := segmentDomain.Segment{Date: "invalid_date"}
 	// When
 	isValidDate := segment.IsValidDate()
 	// Then
@@ -70,7 +71,7 @@ func TestGivenDateTimeWhenIsInvalidThenReturnFalse(t *testing.T) {
 
 func TestGivenDateTimeWhenIsValidThenReturnTrue(t *testing.T) {
 	// Given
-	segment := Segment{Date: "2020-01-01T10:00:00Z"}
+	segment := segmentDomain.Segment{Date: "2020-01-01T10:00:00Z"}
 	// When
 	isValidDate := segment.IsValidDate()
 	// Then
@@ -79,7 +80,7 @@ func TestGivenDateTimeWhenIsValidThenReturnTrue(t *testing.T) {
 
 func TestGivenDistanceWhenValidThenReturnTrue(t *testing.T) {
 	// Given
-	segment := Segment{Distance: 100}
+	segment := segmentDomain.Segment{Distance: 100}
 	// When
 	isValidDistance := segment.IsValidDistance()
 	// Then
@@ -88,7 +89,7 @@ func TestGivenDistanceWhenValidThenReturnTrue(t *testing.T) {
 
 func TestGivenDistanceWhenInValidThenReturnFalse(t *testing.T) {
 	// Given
-	segment := Segment{Distance: -1}
+	segment := segmentDomain.Segment{Distance: -1}
 	// When
 	isValidDistance := segment.IsValidDistance()
 	// Then
@@ -97,7 +98,7 @@ func TestGivenDistanceWhenInValidThenReturnFalse(t *testing.T) {
 
 func TestGivenDistanceWhenIsInvalidThenIsValidReturnFalse(t *testing.T) {
 	// Given
-	segment := Segment{Distance: -1}
+	segment := segmentDomain.Segment{Distance: -1}
 	// When
 	isValid, err := segment.IsValid()
 	// Then
@@ -107,7 +108,7 @@ func TestGivenDistanceWhenIsInvalidThenIsValidReturnFalse(t *testing.T) {
 
 func TestGivenDateWhenIsInvalidThenIsValidReturnFalse(t *testing.T) {
 	// Given
-	segment := Segment{Distance: 10, Date: "invalid"}
+	segment := segmentDomain.Segment{Distance: 10, Date: "invalid"}
 	// When
 	isValid, err := segment.IsValid()
 	// Then
@@ -117,7 +118,7 @@ func TestGivenDateWhenIsInvalidThenIsValidReturnFalse(t *testing.T) {
 
 func TestGivenSegmentWhenDistanceIsInvalidThenIsValidReturnFalse(t *testing.T) {
 	// Given
-	segment := Segment{Distance: -1, Date: "2020-01-01T22:00:00Z"}
+	segment := segmentDomain.Segment{Distance: -1, Date: "2020-01-01T22:00:00Z"}
 	// When
 	isValid, err := segment.IsValid()
 	// Then
@@ -127,7 +128,7 @@ func TestGivenSegmentWhenDistanceIsInvalidThenIsValidReturnFalse(t *testing.T) {
 
 func TestGivenSegmentWhenIsValidThenIsValidReturnTrue(t *testing.T) {
 	// Given
-	segment := Segment{Distance: 10, Date: "2020-01-01T22:00:00Z"}
+	segment := segmentDomain.Segment{Distance: 10, Date: "2020-01-01T22:00:00Z"}
 	// When
 	isValid, _ := segment.IsValid()
 	// Then

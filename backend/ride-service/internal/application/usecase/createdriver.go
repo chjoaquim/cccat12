@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"github.com/chjoaquim/ride-service/internal/application/repository"
-	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/domain/driver"
 )
 
 type CreateDriverUseCase struct {
@@ -15,7 +15,7 @@ func NewCreateDriverUseCase(r repository.DriverRepository) CreateDriverUseCase {
 	}
 }
 
-func (s CreateDriverUseCase) Execute(d *domain.Driver) (*domain.Driver, error) {
+func (s CreateDriverUseCase) Execute(d *driver.Driver) (*driver.Driver, error) {
 	result, err := s.Repository.Create(d)
 	if err != nil {
 		return nil, err

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/domain/driver"
 	"github.com/chjoaquim/ride-service/pkg/database"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -116,8 +116,8 @@ func TestGivenValidDriverID_WhenGetThrowsAnError_ThenReturnError(t *testing.T) {
 	assert.Equal(t, "error_to_get", err.Error())
 }
 
-func buildDriver() *domain.Driver {
-	return &domain.Driver{
+func buildDriver() *driver.Driver {
+	return &driver.Driver{
 		ID:        uuid.New().String(),
 		Name:      "Driver Test",
 		CarPlate:  "ABC-1234",

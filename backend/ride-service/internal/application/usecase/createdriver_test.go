@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"errors"
-	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/domain/driver"
 	"github.com/chjoaquim/ride-service/internal/infra/mocks"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -32,8 +32,8 @@ func TestGivenAValidDriver_WhenTryToCreateWithError_ThenReturnError(t *testing.T
 	assert.Equal(t, "test_error", err.Error())
 }
 
-func buildDriver() *domain.Driver {
-	return &domain.Driver{
+func buildDriver() *driver.Driver {
+	return &driver.Driver{
 		ID:        uuid.New().String(),
 		Name:      "João",
 		Email:     "joão@gmail.com",

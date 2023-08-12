@@ -3,7 +3,7 @@ package createpassengers
 import (
 	"encoding/json"
 	"github.com/chjoaquim/ride-service/internal/application/usecase"
-	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/domain/passenger"
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
 	"io"
@@ -17,8 +17,8 @@ type CreatePassenger struct {
 	Email    string `json:"email"`
 }
 
-func (c *CreatePassenger) ToDomain() domain.Passenger {
-	return domain.Passenger{
+func (c *CreatePassenger) ToDomain() passenger.Passenger {
+	return passenger.Passenger{
 		ID:        uuid.New().String(),
 		Name:      c.Name,
 		Email:     c.Email,

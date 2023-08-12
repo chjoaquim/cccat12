@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/domain/driver"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -13,23 +13,23 @@ type DriverRepository struct {
 }
 
 // Create provides a mock function with given fields: driver
-func (_m *DriverRepository) Create(driver *domain.Driver) (*domain.Driver, error) {
+func (_m *DriverRepository) Create(driver *driver.Driver) (*driver.Driver, error) {
 	ret := _m.Called(driver)
 
-	var r0 *domain.Driver
+	var r0 *driver.Driver
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*domain.Driver) (*domain.Driver, error)); ok {
+	if rf, ok := ret.Get(0).(func(*driver.Driver) (*driver.Driver, error)); ok {
 		return rf(driver)
 	}
-	if rf, ok := ret.Get(0).(func(*domain.Driver) *domain.Driver); ok {
+	if rf, ok := ret.Get(0).(func(*driver.Driver) *driver.Driver); ok {
 		r0 = rf(driver)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*domain.Driver)
+			r0 = ret.Get(0).(*driver.Driver)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(*domain.Driver) error); ok {
+	if rf, ok := ret.Get(1).(func(*driver.Driver) error); ok {
 		r1 = rf(driver)
 	} else {
 		r1 = ret.Error(1)
@@ -39,19 +39,19 @@ func (_m *DriverRepository) Create(driver *domain.Driver) (*domain.Driver, error
 }
 
 // Get provides a mock function with given fields: id
-func (_m *DriverRepository) Get(id string) (*domain.Driver, error) {
+func (_m *DriverRepository) Get(id string) (*driver.Driver, error) {
 	ret := _m.Called(id)
 
-	var r0 *domain.Driver
+	var r0 *driver.Driver
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*domain.Driver, error)); ok {
+	if rf, ok := ret.Get(0).(func(string) (*driver.Driver, error)); ok {
 		return rf(id)
 	}
-	if rf, ok := ret.Get(0).(func(string) *domain.Driver); ok {
+	if rf, ok := ret.Get(0).(func(string) *driver.Driver); ok {
 		r0 = rf(id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*domain.Driver)
+			r0 = ret.Get(0).(*driver.Driver)
 		}
 	}
 

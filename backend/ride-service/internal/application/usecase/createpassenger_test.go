@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"errors"
-	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/domain/passenger"
 	"github.com/chjoaquim/ride-service/internal/infra/mocks"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -11,7 +11,7 @@ import (
 )
 
 func TestGivenAValidPassenger_WhenTryToCreate_ThenReturnPassenger(t *testing.T) {
-	passenger := &domain.Passenger{
+	passenger := &passenger.Passenger{
 		ID:        uuid.New().String(),
 		Name:      "João",
 		Email:     "joão@gmail.com",
@@ -29,7 +29,7 @@ func TestGivenAValidPassenger_WhenTryToCreate_ThenReturnPassenger(t *testing.T) 
 }
 
 func TestGivenAValidPassenger_WhenTryToCreateWithError_ThenReturnError(t *testing.T) {
-	passenger := &domain.Passenger{
+	passenger := &passenger.Passenger{
 		ID:        uuid.New().String(),
 		Name:      "João",
 		Email:     "joão@gmail.com",

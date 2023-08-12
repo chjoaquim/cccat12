@@ -3,7 +3,7 @@ package createdrivers
 import (
 	"encoding/json"
 	"github.com/chjoaquim/ride-service/internal/application/usecase"
-	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/domain/driver"
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
 	"io"
@@ -22,8 +22,8 @@ type DriverRequest struct {
 	CarPlate string `json:"car_plate"`
 }
 
-func (d *DriverRequest) ToDomain() domain.Driver {
-	return domain.Driver{
+func (d *DriverRequest) ToDomain() driver.Driver {
+	return driver.Driver{
 		ID:        uuid.New().String(),
 		Name:      d.Name,
 		Email:     d.Email,

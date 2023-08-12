@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/domain/passenger"
 	"github.com/chjoaquim/ride-service/pkg/database"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -115,8 +115,8 @@ func TestGivenValidPassengerID_WhenGetThrowsAnError_ThenReturnError(t *testing.T
 	assert.Equal(t, "error_to_get", err.Error())
 }
 
-func buildPassenger() *domain.Passenger {
-	return &domain.Passenger{
+func buildPassenger() *passenger.Passenger {
+	return &passenger.Passenger{
 		ID:        uuid.New().String(),
 		Name:      "João",
 		Email:     "joão@gmail.com",

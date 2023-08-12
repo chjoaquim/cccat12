@@ -5,7 +5,7 @@ import (
 	"errors"
 	handlermock "github.com/chjoaquim/ride-service/api/mocks"
 	"github.com/chjoaquim/ride-service/internal/application/usecase"
-	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/domain/passenger"
 	"github.com/chjoaquim/ride-service/internal/infra/mocks"
 	"github.com/chjoaquim/ride-service/pkg/commons"
 	"github.com/stretchr/testify/assert"
@@ -68,8 +68,8 @@ func TestGivenValidRequest_WhenGetDatabaseError_ThenReturnInternalServerError(t 
 	assert.Equal(t, http.StatusInternalServerError, response.Code)
 }
 
-func extractBody(response *httptest.ResponseRecorder) *domain.Passenger {
-	bodyResp := domain.Passenger{}
+func extractBody(response *httptest.ResponseRecorder) *passenger.Passenger {
+	bodyResp := passenger.Passenger{}
 	result, _ := io.ReadAll(response.Body)
 	json.Unmarshal(result, &bodyResp)
 	return &bodyResp

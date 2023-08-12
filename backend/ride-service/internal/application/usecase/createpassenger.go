@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"github.com/chjoaquim/ride-service/internal/application/repository"
-	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/domain/passenger"
 )
 
 type CreatePassengerUseCase struct {
@@ -15,7 +15,7 @@ func NewCreatePassengerUseCase(r repository.PassengerRepository) CreatePassenger
 	}
 }
 
-func (s CreatePassengerUseCase) Execute(d *domain.Passenger) (*domain.Passenger, error) {
+func (s CreatePassengerUseCase) Execute(d *passenger.Passenger) (*passenger.Passenger, error) {
 	result, err := s.Repository.Create(d)
 	if err != nil {
 		return nil, err

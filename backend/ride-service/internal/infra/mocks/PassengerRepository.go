@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/domain/passenger"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -13,23 +13,23 @@ type PassengerRepository struct {
 }
 
 // Create provides a mock function with given fields: passenger
-func (_m *PassengerRepository) Create(passenger *domain.Passenger) (*domain.Passenger, error) {
+func (_m *PassengerRepository) Create(passenger *passenger.Passenger) (*passenger.Passenger, error) {
 	ret := _m.Called(passenger)
 
-	var r0 *domain.Passenger
+	var r0 *passenger.Passenger
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*domain.Passenger) (*domain.Passenger, error)); ok {
+	if rf, ok := ret.Get(0).(func(*passenger.Passenger) (*passenger.Passenger, error)); ok {
 		return rf(passenger)
 	}
-	if rf, ok := ret.Get(0).(func(*domain.Passenger) *domain.Passenger); ok {
+	if rf, ok := ret.Get(0).(func(*passenger.Passenger) *passenger.Passenger); ok {
 		r0 = rf(passenger)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*domain.Passenger)
+			r0 = ret.Get(0).(*passenger.Passenger)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(*domain.Passenger) error); ok {
+	if rf, ok := ret.Get(1).(func(*passenger.Passenger) error); ok {
 		r1 = rf(passenger)
 	} else {
 		r1 = ret.Error(1)
@@ -39,19 +39,19 @@ func (_m *PassengerRepository) Create(passenger *domain.Passenger) (*domain.Pass
 }
 
 // Get provides a mock function with given fields: id
-func (_m *PassengerRepository) Get(id string) (*domain.Passenger, error) {
+func (_m *PassengerRepository) Get(id string) (*passenger.Passenger, error) {
 	ret := _m.Called(id)
 
-	var r0 *domain.Passenger
+	var r0 *passenger.Passenger
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*domain.Passenger, error)); ok {
+	if rf, ok := ret.Get(0).(func(string) (*passenger.Passenger, error)); ok {
 		return rf(id)
 	}
-	if rf, ok := ret.Get(0).(func(string) *domain.Passenger); ok {
+	if rf, ok := ret.Get(0).(func(string) *passenger.Passenger); ok {
 		r0 = rf(id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*domain.Passenger)
+			r0 = ret.Get(0).(*passenger.Passenger)
 		}
 	}
 

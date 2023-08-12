@@ -1,4 +1,6 @@
-package domain
+package ride
+
+import "github.com/chjoaquim/ride-service/internal/domain/ride/segment"
 
 const (
 	OvernightFare       = 3.90
@@ -9,7 +11,7 @@ const (
 )
 
 type Ride struct {
-	Segments []Segment `json:"segments"`
+	Segments []segment.Segment `json:"segments"`
 }
 
 func (r Ride) Calculate() float64 {

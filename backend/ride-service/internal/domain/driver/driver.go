@@ -1,4 +1,4 @@
-package domain
+package driver
 
 type Driver struct {
 	ID        string `json:"id"`

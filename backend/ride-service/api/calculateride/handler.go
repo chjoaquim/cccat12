@@ -3,7 +3,8 @@ package calculateride
 import (
 	"encoding/json"
 	"github.com/chjoaquim/ride-service/internal/application/usecase"
-	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/domain/ride"
+	"github.com/chjoaquim/ride-service/internal/domain/ride/segment"
 	"github.com/go-chi/render"
 	"io"
 	"net/http"
@@ -18,13 +19,13 @@ type RideCalculateResponse struct {
 }
 
 type CalculateRequest struct {
-	Segments []domain.Segment `json:"segments"`
+	Segments []segment.Segment `json:"segments"`
 }
 
-func (cr CalculateRequest) ToDomain() domain.Ride {
-	var ride domain.Ride
+func (cr CalculateRequest) ToDomain() ride.Ride {
+	var ride ride.Ride
 	for _, segment := range cr.Segments {
-		ride.Segments = append(ride.Segments, domain.Segment{
+		ride.Segments = append(ride.Segments, ride.Segment{
 			Distance: segment.Distance,
 			Date:     segment.Date,
 		})
@@ -59,7 +60,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	
+
 	result, err := h.calculateRide.Execute(request.ToDomain())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

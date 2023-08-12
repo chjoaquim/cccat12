@@ -6,7 +6,7 @@ import (
 	"fmt"
 	handlermock "github.com/chjoaquim/ride-service/api/mocks"
 	"github.com/chjoaquim/ride-service/internal/application/usecase"
-	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/domain/driver"
 	"github.com/chjoaquim/ride-service/internal/infra/mocks"
 	"github.com/go-chi/chi"
 	"github.com/stretchr/testify/assert"
@@ -18,7 +18,7 @@ import (
 )
 
 func TestGivenValidID_WhenTryTGetDriver_ThenReturnOK(t *testing.T) {
-	driver := domain.Driver{
+	driver := driver.Driver{
 		ID:        "1",
 		Name:      "João",
 		Email:     "jao@gmail.com",
@@ -58,8 +58,8 @@ func TestGivenValidRequest_WhenGetDatabaseError_ThenReturnInternalServerError(t 
 	assert.Equal(t, http.StatusInternalServerError, response.Code)
 }
 
-func extractBody(response *httptest.ResponseRecorder) *domain.Driver {
-	bodyResp := domain.Driver{}
+func extractBody(response *httptest.ResponseRecorder) *driver.Driver {
+	bodyResp := driver.Driver{}
 	result, _ := io.ReadAll(response.Body)
 	json.Unmarshal(result, &bodyResp)
 	return &bodyResp

@@ -5,7 +5,7 @@ import (
 	"errors"
 	handlermock "github.com/chjoaquim/ride-service/api/mocks"
 	"github.com/chjoaquim/ride-service/internal/application/usecase"
-	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/domain/driver"
 	"github.com/chjoaquim/ride-service/internal/infra/mocks"
 	"github.com/chjoaquim/ride-service/pkg/commons"
 	"github.com/stretchr/testify/assert"
@@ -75,8 +75,8 @@ func sendRequest(body io.Reader, uc usecase.CreateDriverUseCase) *httptest.Respo
 	return rr
 }
 
-func extractBody(response *httptest.ResponseRecorder) *domain.Driver {
-	bodyResp := domain.Driver{}
+func extractBody(response *httptest.ResponseRecorder) *driver.Driver {
+	bodyResp := driver.Driver{}
 	result, _ := io.ReadAll(response.Body)
 	json.Unmarshal(result, &bodyResp)
 	return &bodyResp

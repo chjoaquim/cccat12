@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	handlermock "github.com/chjoaquim/ride-service/api/mocks"
 	"github.com/chjoaquim/ride-service/internal/application/usecase"
-	"github.com/chjoaquim/ride-service/internal/domain"
+	"github.com/chjoaquim/ride-service/internal/domain/ride/segment"
 	"github.com/chjoaquim/ride-service/pkg/commons"
 	"github.com/stretchr/testify/assert"
 	"io"
@@ -16,7 +16,7 @@ import (
 
 func TestGivenValidSegment_WhenTryingToCalculate_ThenReturnSuccess(t *testing.T) {
 	request := CalculateRequest{
-		Segments: []domain.Segment{
+		Segments: []segment.Segment{
 			{
 				Distance: 10,
 				Date:     "2023-07-11T14:00:00Z",
@@ -34,7 +34,7 @@ func TestGivenValidSegment_WhenTryingToCalculate_ThenReturnSuccess(t *testing.T)
 
 func TestGivenInValidSegment_WhenTryingToCalculate_ThenReturnBadRequest(t *testing.T) {
 	request := CalculateRequest{
-		Segments: []domain.Segment{
+		Segments: []segment.Segment{
 			{
 				Distance: -1,
 				Date:     "2023-07-11T14:00:00Z",
