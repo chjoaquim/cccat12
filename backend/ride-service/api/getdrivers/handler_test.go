@@ -14,21 +14,15 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 )
 
 func TestGivenValidID_WhenTryTGetDriver_ThenReturnOK(t *testing.T) {
-	driver := driver.Driver{
-		ID:        "1",
-		Name:      "João",
-		Email:     "jao@gmail.com",
-		Document:  "41565245896",
-		CarPlate:  "AAA1234",
-		CreatedAt: time.Now().Format(time.RFC3339),
-	}
-	id := "1"
+
+	driver, _ := driver.New("João", "jao@gmail.com", "41565245896", "AAA1234")
+
+	id := driver.ID
 	repo := new(mocks.DriverRepository)
-	repo.On("Get", id).Return(&driver, nil)
+	repo.On("Get", id).Return(driver, nil)
 	uc := usecase.NewGetDriverUseCase(repo)
 	response := sendRequest(id, uc)
 	bodyResp := extractBody(response)

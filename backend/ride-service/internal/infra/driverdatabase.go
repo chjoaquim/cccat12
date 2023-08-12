@@ -1,7 +1,8 @@
 package infra
 
 import (
-	"github.com/chjoaquim/ride-service/internal/domain/driver"
+	driverDomain "github.com/chjoaquim/ride-service/internal/domain/driver"
+	carPlateDomain "github.com/chjoaquim/ride-service/internal/domain/driver/carplate"
 	"github.com/chjoaquim/ride-service/pkg/database"
 )
 
@@ -15,17 +16,21 @@ func NewDriverDB(db *database.Database) *DriverDB {
 	}
 }
 
-func (d *DriverDB) Get(id string) (*driver.Driver, error) {
-	driver := driver.Driver{}
+func (d *DriverDB) Get(id string) (*driverDomain.Driver, error) {
+	driver := driverDomain.Driver{}
+	var plate string
 	row := d.db.Connection.QueryRow(`SELECT id, name, document, email, car_plate, created_at FROM drivers WHERE id=$1`, id)
-	err := row.Scan(&driver.ID, &driver.Name, &driver.Document, &driver.Email, &driver.CarPlate, &driver.CreatedAt)
+	err := row.Scan(&driver.ID, &driver.Name, &driver.Document, &driver.Email, &plate, &driver.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
+
+	carPlate, _ := carPlateDomain.New(plate)
+	driver.CarPlate = carPlate
 	return &driver, nil
 }
 
-func (d *DriverDB) Create(driver *driver.Driver) (*driver.Driver, error) {
+func (d *DriverDB) Create(driver *driverDomain.Driver) (*driverDomain.Driver, error) {
 	stmt, err := d.db.Connection.Prepare(`insert into drivers (id, name, document, email, car_plate, created_at) values ($1,$2, $3, $4, $5, $6)`)
 	if err != nil {
 		return nil, err
@@ -37,7 +42,7 @@ func (d *DriverDB) Create(driver *driver.Driver) (*driver.Driver, error) {
 		driver.Name,
 		driver.Document,
 		driver.Email,
-		driver.CarPlate,
+		driver.CarPlate.Value(),
 		driver.CreatedAt,
 	)
 

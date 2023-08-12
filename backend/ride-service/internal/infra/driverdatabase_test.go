@@ -24,7 +24,7 @@ func TestGivenValidDriver_WhenTryingToInsert_ThenReturnDriver(t *testing.T) {
 	mock.ExpectPrepare("insert into drivers")
 	mock.
 		ExpectExec("insert into drivers").
-		WithArgs(driver.ID, driver.Name, driver.Document, driver.Email, driver.CarPlate, driver.CreatedAt).
+		WithArgs(driver.ID, driver.Name, driver.Document, driver.Email, driver.CarPlate.Value(), driver.CreatedAt).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectBegin()
 	mock.ExpectCommit()
@@ -61,7 +61,7 @@ func TestGivenValidDriver_WhenTryToExecQueryWithError_ThenReturnError(t *testing
 	mock.ExpectPrepare("insert into drivers")
 	mock.
 		ExpectExec("insert into drivers").
-		WithArgs(driver.ID, driver.Name, driver.Document, driver.Email, driver.CarPlate, driver.CreatedAt).
+		WithArgs(driver.ID, driver.Name, driver.Document, driver.Email, driver.CarPlate.Value(), driver.CreatedAt).
 		WillReturnError(errors.New("error_to_exec"))
 
 	p, err := driverDB.Create(driver)
@@ -82,7 +82,7 @@ func TestGivenValidDriverID_WhenTryGet_ThenReturnOK(t *testing.T) {
 	mock.
 		ExpectQuery("SELECT id, name, document, email, car_plate, created_at FROM drivers").
 		WithArgs(driverID).
-		WillReturnRows(sqlmock.NewRows(columns).FromCSVString(fmt.Sprintf("%s, Paulo, 13301293, pauloemail.com, AAB-0921, %s", driverID, time.Now().Format(time.RFC3339))))
+		WillReturnRows(sqlmock.NewRows(columns).FromCSVString(fmt.Sprintf("%s, Paulo, 13301293, pauloemail.com, AAB0921, %s", driverID, time.Now().Format(time.RFC3339))))
 	mock.ExpectBegin()
 	mock.ExpectCommit()
 
@@ -91,7 +91,7 @@ func TestGivenValidDriverID_WhenTryGet_ThenReturnOK(t *testing.T) {
 	assert.Equal(t, "Paulo", driver.Name)
 	assert.Equal(t, "13301293", driver.Document)
 	assert.Equal(t, "pauloemail.com", driver.Email)
-	assert.Equal(t, "AAB-0921", driver.CarPlate)
+	assert.Equal(t, "AAB0921", driver.CarPlate.Value())
 	assert.Nil(t, err)
 }
 
@@ -117,11 +117,6 @@ func TestGivenValidDriverID_WhenGetThrowsAnError_ThenReturnError(t *testing.T) {
 }
 
 func buildDriver() *driver.Driver {
-	return &driver.Driver{
-		ID:        uuid.New().String(),
-		Name:      "Driver Test",
-		CarPlate:  "ABC-1234",
-		Document:  "123456789",
-		CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
-	}
+	driver, _ := driver.New("Driver Test", "123456789", "", "ABC1234")
+	return driver
 }

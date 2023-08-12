@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	"github.com/chjoaquim/ride-service/internal/domain/driver"
+	driver "github.com/chjoaquim/ride-service/internal/domain/driver"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -12,17 +12,17 @@ type DriverRepository struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: driver
-func (_m *DriverRepository) Create(driver *driver.Driver) (*driver.Driver, error) {
-	ret := _m.Called(driver)
+// Create provides a mock function with given fields: _a0
+func (_m *DriverRepository) Create(_a0 *driver.Driver) (*driver.Driver, error) {
+	ret := _m.Called(_a0)
 
 	var r0 *driver.Driver
 	var r1 error
 	if rf, ok := ret.Get(0).(func(*driver.Driver) (*driver.Driver, error)); ok {
-		return rf(driver)
+		return rf(_a0)
 	}
 	if rf, ok := ret.Get(0).(func(*driver.Driver) *driver.Driver); ok {
-		r0 = rf(driver)
+		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*driver.Driver)
@@ -30,7 +30,7 @@ func (_m *DriverRepository) Create(driver *driver.Driver) (*driver.Driver, error
 	}
 
 	if rf, ok := ret.Get(1).(func(*driver.Driver) error); ok {
-		r1 = rf(driver)
+		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
 	}

@@ -5,10 +5,8 @@ import (
 	"github.com/chjoaquim/ride-service/internal/application/usecase"
 	"github.com/chjoaquim/ride-service/internal/domain/driver"
 	"github.com/go-chi/render"
-	"github.com/google/uuid"
 	"io"
 	"net/http"
-	"time"
 )
 
 type handler struct {
@@ -22,15 +20,8 @@ type DriverRequest struct {
 	CarPlate string `json:"car_plate"`
 }
 
-func (d *DriverRequest) ToDomain() driver.Driver {
-	return driver.Driver{
-		ID:        uuid.New().String(),
-		Name:      d.Name,
-		Email:     d.Email,
-		Document:  d.Document,
-		CarPlate:  d.CarPlate,
-		CreatedAt: time.Now().Format(time.RFC3339),
-	}
+func (d *DriverRequest) ToDomain() (*driver.Driver, error) {
+	return driver.New(d.Name, d.Email, d.Document, d.CarPlate)
 }
 
 func NewCreateDriverHandler(uc usecase.CreateDriverUseCase) handler {
@@ -61,8 +52,13 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	passenger := request.ToDomain()
-	result, err := h.useCase.Execute(&passenger)
+	passenger, err := request.ToDomain()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	result, err := h.useCase.Execute(passenger)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

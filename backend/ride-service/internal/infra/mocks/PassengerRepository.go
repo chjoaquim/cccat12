@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	"github.com/chjoaquim/ride-service/internal/domain/passenger"
+	passenger "github.com/chjoaquim/ride-service/internal/domain/passenger"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -12,17 +12,17 @@ type PassengerRepository struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: passenger
-func (_m *PassengerRepository) Create(passenger *passenger.Passenger) (*passenger.Passenger, error) {
-	ret := _m.Called(passenger)
+// Create provides a mock function with given fields: _a0
+func (_m *PassengerRepository) Create(_a0 *passenger.Passenger) (*passenger.Passenger, error) {
+	ret := _m.Called(_a0)
 
 	var r0 *passenger.Passenger
 	var r1 error
 	if rf, ok := ret.Get(0).(func(*passenger.Passenger) (*passenger.Passenger, error)); ok {
-		return rf(passenger)
+		return rf(_a0)
 	}
 	if rf, ok := ret.Get(0).(func(*passenger.Passenger) *passenger.Passenger); ok {
-		r0 = rf(passenger)
+		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*passenger.Passenger)
@@ -30,7 +30,7 @@ func (_m *PassengerRepository) Create(passenger *passenger.Passenger) (*passenge
 	}
 
 	if rf, ok := ret.Get(1).(func(*passenger.Passenger) error); ok {
-		r1 = rf(passenger)
+		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
 	}

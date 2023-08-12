@@ -4,10 +4,8 @@ import (
 	"errors"
 	"github.com/chjoaquim/ride-service/internal/domain/driver"
 	"github.com/chjoaquim/ride-service/internal/infra/mocks"
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"time"
 )
 
 func TestGivenAValidDriver_WhenTryToCreate_ThenReturnDriver(t *testing.T) {
@@ -33,12 +31,6 @@ func TestGivenAValidDriver_WhenTryToCreateWithError_ThenReturnError(t *testing.T
 }
 
 func buildDriver() *driver.Driver {
-	return &driver.Driver{
-		ID:        uuid.New().String(),
-		Name:      "João",
-		Email:     "joão@gmail.com",
-		Document:  "123456789",
-		CarPlate:  "ABC-1234",
-		CreatedAt: time.Now().Format(time.RFC3339),
-	}
+	driver, _ := driver.New("João", "joão@gmail.com", "123456789", "ABC1234")
+	return driver
 }
