@@ -1,6 +1,7 @@
 package infra
 
 import (
+	cpfDomain "github.com/chjoaquim/ride-service/internal/domain/cpf"
 	driverDomain "github.com/chjoaquim/ride-service/internal/domain/driver"
 	carPlateDomain "github.com/chjoaquim/ride-service/internal/domain/driver/carplate"
 	"github.com/chjoaquim/ride-service/pkg/database"
@@ -19,14 +20,17 @@ func NewDriverDB(db *database.Database) *DriverDB {
 func (d *DriverDB) Get(id string) (*driverDomain.Driver, error) {
 	driver := driverDomain.Driver{}
 	var plate string
+	var document string
 	row := d.db.Connection.QueryRow(`SELECT id, name, document, email, car_plate, created_at FROM drivers WHERE id=$1`, id)
-	err := row.Scan(&driver.ID, &driver.Name, &driver.Document, &driver.Email, &plate, &driver.CreatedAt)
+	err := row.Scan(&driver.ID, &driver.Name, &document, &driver.Email, &plate, &driver.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
 
 	carPlate, _ := carPlateDomain.New(plate)
+	cpf, _ := cpfDomain.New(document)
 	driver.CarPlate = carPlate
+	driver.Document = cpf
 	return &driver, nil
 }
 
@@ -40,7 +44,7 @@ func (d *DriverDB) Create(driver *driverDomain.Driver) (*driverDomain.Driver, er
 	_, err = stmt.Exec(
 		driver.ID,
 		driver.Name,
-		driver.Document,
+		driver.Document.Value(),
 		driver.Email,
 		driver.CarPlate.Value(),
 		driver.CreatedAt,

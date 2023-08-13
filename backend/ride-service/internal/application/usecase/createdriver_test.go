@@ -31,6 +31,6 @@ func TestGivenAValidDriver_WhenTryToCreateWithError_ThenReturnError(t *testing.T
 }
 
 func buildDriver() *driver.Driver {
-	driver, _ := driver.New("João", "joão@gmail.com", "123456789", "ABC1234")
+	driver, _ := driver.New("João", "joão@gmail.com", "415.765.112-00", "ABC1234")
 	return driver
 }

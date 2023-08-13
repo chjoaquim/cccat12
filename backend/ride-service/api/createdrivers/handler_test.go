@@ -22,7 +22,7 @@ func TestGivenValidRequest_WhenTryToInsertDriver_ThenReturnOK(t *testing.T) {
 		Name:     "João",
 		Email:    "joao@gmail.com",
 		CarPlate: "AAA1234",
-		Document: "41565245896",
+		Document: "415.765.112-00",
 	}
 	driver, _ := request.ToDomain()
 	repo := new(mocks.DriverRepository)
@@ -51,7 +51,23 @@ func TestGivenInValidCarPlate_WhenTryToInsertDriver_ThenReturnBadRequest(t *test
 		Name:     "João",
 		Email:    "joao@gmail.com",
 		CarPlate: "AX04",
-		Document: "41565245896",
+		Document: "415.765.112-00",
+	}
+	driver, _ := request.ToDomain()
+	repo := new(mocks.DriverRepository)
+	repo.On("Create", mock.Anything).Return(driver, nil)
+	uc := usecase.NewCreateDriverUseCase(repo)
+
+	response := sendRequest(strings.NewReader(commons.StructToJson(request)), uc)
+	assert.Equal(t, http.StatusBadRequest, response.Code)
+}
+
+func TestGivenInValidDocument_WhenTryToInsertDriver_ThenReturnBadRequest(t *testing.T) {
+	request := DriverRequest{
+		Name:     "João",
+		Email:    "joao@gmail.com",
+		CarPlate: "AAA1234",
+		Document: "41123",
 	}
 	driver, _ := request.ToDomain()
 	repo := new(mocks.DriverRepository)
@@ -74,7 +90,7 @@ func TestGivenValidRequest_WhenGetDatabaseError_ThenReturnInternalServerError(t 
 		Name:     "João",
 		Email:    "joao@gmail.com",
 		CarPlate: "AAA1234",
-		Document: "41565245896",
+		Document: "415.765.112-00",
 	}
 	repo := new(mocks.DriverRepository)
 	repo.On("Create", mock.Anything).Return(nil, errors.New("database error"))

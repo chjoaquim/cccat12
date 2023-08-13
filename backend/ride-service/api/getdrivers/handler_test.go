@@ -18,7 +18,7 @@ import (
 
 func TestGivenValidID_WhenTryTGetDriver_ThenReturnOK(t *testing.T) {
 
-	driver, _ := driver.New("João", "jao@gmail.com", "41565245896", "AAA1234")
+	driver, _ := driver.New("João", "jao@gmail.com", "415.765.112-00", "AAA1234")
 
 	id := driver.ID
 	repo := new(mocks.DriverRepository)
