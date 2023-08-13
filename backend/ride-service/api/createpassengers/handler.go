@@ -5,10 +5,8 @@ import (
 	"github.com/chjoaquim/ride-service/internal/application/usecase"
 	"github.com/chjoaquim/ride-service/internal/domain/passenger"
 	"github.com/go-chi/render"
-	"github.com/google/uuid"
 	"io"
 	"net/http"
-	"time"
 )
 
 type CreatePassenger struct {
@@ -17,14 +15,8 @@ type CreatePassenger struct {
 	Email    string `json:"email"`
 }
 
-func (c *CreatePassenger) ToDomain() passenger.Passenger {
-	return passenger.Passenger{
-		ID:        uuid.New().String(),
-		Name:      c.Name,
-		Email:     c.Email,
-		Document:  c.Document,
-		CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
-	}
+func (c *CreatePassenger) ToDomain() (*passenger.Passenger, error) {
+	return passenger.New(c.Name, c.Document, c.Email)
 }
 
 type handler struct {
@@ -59,8 +51,12 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	passenger := request.ToDomain()
-	result, err := h.CreatePassengerUseCase.Execute(&passenger)
+	passenger, err := request.ToDomain()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	result, err := h.CreatePassengerUseCase.Execute(passenger)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -21,16 +21,28 @@ func TestGivenValidRequest_WhenTryToInsertPassenger_ThenReturnOK(t *testing.T) {
 	request := CreatePassenger{
 		Name:     "João",
 		Email:    "joao@gmail.com",
-		Document: "41565245896",
+		Document: "415.765.112-00",
 	}
-	passenger := request.ToDomain()
+	passenger, _ := request.ToDomain()
 	repo := new(mocks.PassengerRepository)
-	repo.On("Create", mock.Anything).Return(&passenger, nil)
+	repo.On("Create", mock.Anything).Return(passenger, nil)
 	uc := usecase.NewCreatePassengerUseCase(repo)
 	response := sendRequest(strings.NewReader(commons.StructToJson(request)), uc)
 	bodyResp := extractBody(response)
 	assert.Equal(t, http.StatusCreated, response.Code)
 	assert.Equal(t, request.Name, bodyResp.Name)
+}
+
+func TestGivenInValidDocument_WhenTryToInsertPassenger_ThenReturnError(t *testing.T) {
+	request := CreatePassenger{
+		Name:     "João",
+		Email:    "joao@gmail.com",
+		Document: "4151200",
+	}
+	repo := new(mocks.PassengerRepository)
+	uc := usecase.NewCreatePassengerUseCase(repo)
+	response := sendRequest(strings.NewReader(commons.StructToJson(request)), uc)
+	assert.Equal(t, http.StatusBadRequest, response.Code)
 }
 
 func TestGivenInValidRequest_WhenTryToInsertPassenger_ThenReturnBadRequest(t *testing.T) {
@@ -58,7 +70,7 @@ func TestGivenValidRequest_WhenGetDatabaseError_ThenReturnInternalServerError(t 
 	request := CreatePassenger{
 		Name:     "João",
 		Email:    "joao@gmail.com",
-		Document: "41565245896",
+		Document: "415.765.112-00",
 	}
 	repo := new(mocks.PassengerRepository)
 	repo.On("Create", mock.Anything).Return(nil, errors.New("database error"))

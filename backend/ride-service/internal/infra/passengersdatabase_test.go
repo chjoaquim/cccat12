@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/DATA-DOG/go-sqlmock"
+	cpfDomain "github.com/chjoaquim/ride-service/internal/domain/cpf"
 	"github.com/chjoaquim/ride-service/internal/domain/passenger"
 	"github.com/chjoaquim/ride-service/pkg/database"
 	"github.com/google/uuid"
@@ -24,7 +25,7 @@ func TestGivenValidPassenger_WhenTryToInsertToDB_ThenReturnOK(t *testing.T) {
 	mock.ExpectPrepare("insert into passengers")
 	mock.
 		ExpectExec("insert into passengers").
-		WithArgs(passenger.ID, passenger.Name, passenger.Document, passenger.Email, passenger.CreatedAt).
+		WithArgs(passenger.ID, passenger.Name, passenger.Document.Value(), passenger.Email, passenger.CreatedAt).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectBegin()
 	mock.ExpectCommit()
@@ -61,7 +62,7 @@ func TestGivenValidPassenger_WhenTryToExecQueryWithError_ThenReturnError(t *test
 	mock.ExpectPrepare("insert into passengers")
 	mock.
 		ExpectExec("insert into passengers").
-		WithArgs(passenger.ID, passenger.Name, passenger.Document, passenger.Email, passenger.CreatedAt).
+		WithArgs(passenger.ID, passenger.Name, passenger.Document.Value(), passenger.Email, passenger.CreatedAt).
 		WillReturnError(errors.New("error_to_exec"))
 
 	p, err := pdb.Create(passenger)
@@ -82,14 +83,14 @@ func TestGivenValidPassengerID_WhenTryGet_ThenReturnOK(t *testing.T) {
 	mock.
 		ExpectQuery("SELECT id, name, document, email, created_at FROM passengers").
 		WithArgs(passengerID).
-		WillReturnRows(sqlmock.NewRows(columns).FromCSVString(fmt.Sprintf("%s, João, 13301293, joaoemail.com, %s", passengerID, time.Now().Format(time.RFC3339))))
+		WillReturnRows(sqlmock.NewRows(columns).FromCSVString(fmt.Sprintf("%s, João, 415.765.112-00, joaoemail.com, %s", passengerID, time.Now().Format(time.RFC3339))))
 	mock.ExpectBegin()
 	mock.ExpectCommit()
 
 	p, err := pdb.Get(passengerID)
 	assert.Equal(t, passengerID, p.ID)
 	assert.Equal(t, "João", p.Name)
-	assert.Equal(t, "13301293", p.Document)
+	assert.Equal(t, "415.765.112-00", p.Document.Value())
 	assert.Equal(t, "joaoemail.com", p.Email)
 	assert.Nil(t, err)
 }
@@ -116,11 +117,12 @@ func TestGivenValidPassengerID_WhenGetThrowsAnError_ThenReturnError(t *testing.T
 }
 
 func buildPassenger() *passenger.Passenger {
+	cpf, _ := cpfDomain.New("415.765.112-00")
 	return &passenger.Passenger{
 		ID:        uuid.New().String(),
 		Name:      "João",
 		Email:     "joão@gmail.com",
-		Document:  "123456789",
+		Document:  cpf,
 		CreatedAt: time.Now().Format(time.RFC3339),
 	}
 }

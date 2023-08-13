@@ -11,13 +11,14 @@ type Cpf struct {
 }
 
 const (
-	minCpfLength = 11
-	maxCpfLength = 14
+	minCpfLength  = 11
+	maxCpfLength  = 14
+	ErrInvalidCpf = "invalid_cpf"
 )
 
 func New(value string) (Cpf, error) {
 	if !isValid(value) {
-		return Cpf{}, errors.New("invalid_cpf")
+		return Cpf{}, errors.New(ErrInvalidCpf)
 	}
 	return Cpf{value: value}, nil
 }

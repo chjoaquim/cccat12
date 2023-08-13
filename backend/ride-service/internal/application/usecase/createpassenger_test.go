@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	cpfDomain "github.com/chjoaquim/ride-service/internal/domain/cpf"
 	"github.com/chjoaquim/ride-service/internal/domain/passenger"
 	"github.com/chjoaquim/ride-service/internal/infra/mocks"
 	"github.com/google/uuid"
@@ -11,11 +12,12 @@ import (
 )
 
 func TestGivenAValidPassenger_WhenTryToCreate_ThenReturnPassenger(t *testing.T) {
+	cpf, _ := cpfDomain.New("415.765.112-00")
 	passenger := &passenger.Passenger{
 		ID:        uuid.New().String(),
 		Name:      "João",
 		Email:     "joão@gmail.com",
-		Document:  "123456789",
+		Document:  cpf,
 		CreatedAt: time.Now().Format(time.RFC3339),
 	}
 
@@ -29,11 +31,12 @@ func TestGivenAValidPassenger_WhenTryToCreate_ThenReturnPassenger(t *testing.T) 
 }
 
 func TestGivenAValidPassenger_WhenTryToCreateWithError_ThenReturnError(t *testing.T) {
+	cpf, _ := cpfDomain.New("415.765.112-00")
 	passenger := &passenger.Passenger{
 		ID:        uuid.New().String(),
 		Name:      "João",
 		Email:     "joão@gmail.com",
-		Document:  "123456789",
+		Document:  cpf,
 		CreatedAt: time.Now().Format(time.RFC3339),
 	}
 

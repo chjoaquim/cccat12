@@ -2,7 +2,8 @@ package infra
 
 import (
 	"fmt"
-	"github.com/chjoaquim/ride-service/internal/domain/passenger"
+	cpfDomain "github.com/chjoaquim/ride-service/internal/domain/cpf"
+	passengerDomain "github.com/chjoaquim/ride-service/internal/domain/passenger"
 	"github.com/chjoaquim/ride-service/pkg/database"
 )
 
@@ -16,17 +17,20 @@ func NewPassengersDB(db *database.Database) *PassengersDB {
 	}
 }
 
-func (p *PassengersDB) Get(id string) (*passenger.Passenger, error) {
-	passenger := passenger.Passenger{}
+func (p *PassengersDB) Get(id string) (*passengerDomain.Passenger, error) {
+	passenger := passengerDomain.Passenger{}
+	var cpf string
 	row := p.db.Connection.QueryRow(`SELECT id, name, document, email, created_at FROM passengers WHERE id=$1`, id)
-	err := row.Scan(&passenger.ID, &passenger.Name, &passenger.Document, &passenger.Email, &passenger.CreatedAt)
+	err := row.Scan(&passenger.ID, &passenger.Name, &cpf, &passenger.Email, &passenger.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
+	c, _ := cpfDomain.New(cpf)
+	passenger.Document = c
 	return &passenger, nil
 }
 
-func (p *PassengersDB) Create(passenger *passenger.Passenger) (*passenger.Passenger, error) {
+func (p *PassengersDB) Create(passenger *passengerDomain.Passenger) (*passengerDomain.Passenger, error) {
 	stmt, err := p.db.Connection.Prepare(`insert into passengers (id, name, document, email, created_at) values ($1,$2, $3, $4, $5)`)
 	if err != nil {
 		return nil, err
@@ -36,7 +40,7 @@ func (p *PassengersDB) Create(passenger *passenger.Passenger) (*passenger.Passen
 	_, err = stmt.Exec(
 		passenger.ID,
 		passenger.Name,
-		passenger.Document,
+		passenger.Document.Value(),
 		passenger.Email,
 		passenger.CreatedAt,
 	)
